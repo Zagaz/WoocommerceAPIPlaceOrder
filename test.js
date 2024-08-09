@@ -1,9 +1,12 @@
+// All variables
 const WOOAPI = "https://woolibresign.s1-tastewp.com/wp-json/wc/v3"; // <== Hardcode
 var auth =
   "Y2tfNDQ2ZjQxYzZiOTc0MGEzYWExZWU5NmZkNzAwNmE2MDcxZDhjZDg5Mjpjc183OWMzYjkyM2ZmNGM0ZjE1MjgyYWNmODhiNDdjMWQ1NTczNTg4MDNk"; // <== Hardcode
-var payment_method = "paypal";
-var payment_method_title = "PayPal";
-var set_paid = true;
+var payment_method = "paypal"; // <== Hardcode
+var payment_method_title = "PayPal"; // <== Hardcode
+var set_paid = true; // <== Hardcode
+
+// DADOS do WOOCOMMERCE INICIO 
 var first_name = "Bruce"; // <===
 var last_name = "Wayne"; // <===
 var address_1 = "Wayne Manor - 1007 Mountain Drive"; // <===
@@ -13,6 +16,9 @@ var postcode = "10001"; // <===
 var country = "US"; // <===
 var email = "bruce.wayne@waynetech.com"; // <===
 var phone = "(555) 123-4567"; // <===
+
+// DADOS do WOOCOMMERCE FINAL
+
 // Free shipping
 var product_id = 12; // < Hardcode
 var quantity = 1; // < Hardcode
@@ -69,7 +75,9 @@ const options_get = {
 post_order();
 
 async function post_order() {
+  // A URL da API e Opções
   const order = await fetch(`${WOOAPI}/orders`, options_post);
+  // Ver se tá tudo OK.
   if (!order.ok) {
     const message = `An error has occured: ${order.status}`;
     document.querySelector(".orderPost").classList.add("error");
@@ -78,15 +86,15 @@ async function post_order() {
     document.querySelector(".orderPost").innerHTML = message;
     throw new Error(message);
   } else {
+    // Se sim
     let res = await order.json();
     let order_id_post = res["id"];
     document.querySelector(".orderPost").classList.add("success");
-
     document.querySelector(".orderPost").innerHTML = `Order #${order_id_post} successfully registered.`;
     get_order_by_ID(order_id_post);
   }
 }
-
+// Só para checar se o pedido foi registrado
 async function get_order_by_ID(order_id) {
   const order = await fetch(`${WOOAPI}/orders/${order_id}`, options_get);
   if (!order.ok) {
