@@ -111,11 +111,11 @@ async function get_order_by_ID(order_id) {
     document.querySelector(".orderGet").innerHTML = message;
     throw new Error(message);
   } else {
-    let res = await order.json();
-    let order_id_get = res["id"];
-    let first_name = res["billing"]["first_name"];
-    let last_name = res["billing"]["last_name"];
-    let currency = res["currency"];
+    const res = await order.json();
+    const order_id_get = res["id"];
+    const first_name = res["billing"]["first_name"];
+    const last_name = res["billing"]["last_name"];
+    const currency = res["currency"];
     document.querySelector(".orderGet").classList.add("success");
     document.querySelector(".orderGet").innerHTML = `Order #${order_id_get} has been retrieved successfully.<br>
     First Name: ${first_name}<br>
@@ -156,12 +156,10 @@ async function payWithPayPal(wooOrderID, currency_code, value) {
       })
   });
 
-  const createOrderData = await createOrderResponse.json();
-  const paypalOrderID = createOrderData.id; // Save PayPal order ID for later
-
-  console.log("PayPal Object", createOrderData);
-  
-
+  // on createOrder response store the 'id' in a variable.
+  const order = await createOrderResponse.json();
+  const orderID = order.id;
+  console.log('Order ID:', orderID);
 
 
   console.log("PayPal finished")
