@@ -99,9 +99,9 @@ async function post_order() {
     ).innerHTML = `Order #${order_id_post} successfully registered.`;
 
     // resquestPayPal();
+    get_order_by_ID(order_id_post);
     payWithPayPal(order_id_post, order_currency, order_total);
 
-    get_order_by_ID(order_id_post);
   }
 }
 // Só para checar se o pedido foi registrado
@@ -164,6 +164,8 @@ async function payWithPayPal(wooOrderID, currency_code, value) {
     }
   );
 
+  
+
   const createOrderData = await createOrderResponse.json();
   const paypalOrderID = createOrderData.id; // Save PayPal order ID for later
 
@@ -201,7 +203,9 @@ function payWithPayPal(wooOrderID, currency_code, value) {
         return actions.order.capture().then(function (details) {
           alert("Transaction completed by " + details.payer.name.given_name);
           console.log("PayPal Order Details:", details);
-          // Aqui você pode atualizar o status do pedido no WooCommerce, se necessário
+          //  atualizar status woocommerce
+
+
         });
       },
     })
