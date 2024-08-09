@@ -29,4 +29,14 @@ body {
 }
 .main .orderGet.success {
   background-color: rgb(204, 255, 204);
+}
+.main .gateway {
+  padding: 20px;
+  background-color: rgb(231, 231, 231);
+}
+.main .gateway.error {
+  background-color: rgb(255, 204, 204);
+}
+.main .gateway.success {
+  background-color: rgb(204, 255, 204);
 }/*# sourceMappingURL=style.css.map */

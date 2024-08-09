@@ -29,4 +29,14 @@ body{
                background-color: rgb(204, 255, 204);
           }
      }
+     .gateway{
+          padding: 20px;
+          background-color: rgb(231, 231, 231);
+          &.error{
+               background-color: rgb(255, 204, 204);
+          }
+          &.success{
+               background-color: rgb(204, 255, 204);
+          }
+     }
 }
