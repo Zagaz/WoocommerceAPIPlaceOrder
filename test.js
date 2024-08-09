@@ -1,3 +1,6 @@
+var url = "https://woolibresign.s1-tastewp.com/wp-json/wc/v3/orders";
+
+
 var payment_method = "paypal";
 var payment_method_title = "PayPal";
 var set_paid = true;
