@@ -91,6 +91,9 @@ async function post_order() {
     let order_id_post = res["id"];
     document.querySelector(".orderPost").classList.add("success");
     document.querySelector(".orderPost").innerHTML = `Order #${order_id_post} successfully registered.`;
+  
+  // resquestPayPal(); 
+
     get_order_by_ID(order_id_post);
   }
 }
