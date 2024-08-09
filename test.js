@@ -4,7 +4,7 @@ var auth =
   "Y2tfNDQ2ZjQxYzZiOTc0MGEzYWExZWU5NmZkNzAwNmE2MDcxZDhjZDg5Mjpjc183OWMzYjkyM2ZmNGM0ZjE1MjgyYWNmODhiNDdjMWQ1NTczNTg4MDNk"; // <== Hardcode
 var payment_method = "paypal"; // <== Hardcode
 var payment_method_title = "PayPal"; // <== Hardcode
-var set_paid = true; // <== Hardcode
+var set_paid = false; // <== Hardcode
 
 // DADOS do WOOCOMMERCE INICIO
 var first_name = "Bruce"; // <===
@@ -16,6 +16,7 @@ var postcode = "10001"; // <===
 var country = "US"; // <===
 var email = "bruce.wayne@waynetech.com"; // <===
 var phone = "(555) 123-4567"; // <===
+
 
 // DADOS do WOOCOMMERCE FINAL
 
@@ -38,6 +39,7 @@ const options_post = {
     payment_method: payment_method,
     payment_method_title: payment_method_title,
     set_paid: set_paid,
+    status: "pending", // <= Keep pending
     billing: {
       first_name: first_name,
       last_name: last_name,
@@ -214,5 +216,7 @@ function payWithPayPal(wooOrderID, currency_code, value) {
 
 function updateWoocommerceOrderStatus(order_id, status) {
   alert(`Update Order Status on WooCommerce<br>Order ID: ${order_id}<br>Status: ${status}`);
+  // var set_paid = true; // 
+  // status: "completed", // 
 }
 
