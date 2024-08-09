@@ -5,16 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
+    <script src="test.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AaF1bCbWfjh-vDEHWrk9NHYv2ABvQ_67_OKT4yMmmvpAEzvzK-v7sSYXwMcALBGeT8FyRY5stgvyaDKZ"></script>
 </head>
 <body>
-    <script src="test.js">
-        
-    </script>
+
     <div class="main">
         <h3>Woocommerce API</h3>
         <p class="orderPost"></p>
         <p class="orderGet"></p>
-        <p class="gateway"></p>
+        <div class="gateway">
+
+            
+        </div>
+        <div id="paypal-button-container"></div>
+        <script>
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: '100.00'
+                            }
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        alert('Transaction completed by ' + details.payer.name.given_name);
+                        console.log('Transaction details:', details);
+                    });
+                },
+                onCancel: function (data) {
+                    alert('Transaction was cancelled.');
+                },
+                onError: function (err) {
+                    console.error('Error:', err);
+                    alert('An error occurred during the transaction.');
+                }
+            }).render('#paypal-button-container');
+        </script>
+
     </div>
     
    
