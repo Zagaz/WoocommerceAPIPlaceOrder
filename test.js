@@ -1,6 +1,6 @@
-const  WOOAPI = "https://woolibresign.s1-tastewp.com/wp-json/wc/v3";
-var auth = "Y2tfNDQ2ZjQxYzZiOTc0MGEzYWExZWU5NmZkNzAwNmE2MDcxZDhjZDg5Mjpjc183OWMzYjkyM2ZmNGM0ZjE1MjgyYWNmODhiNDdjMWQ1NTczNTg4MDNk"
-
+const WOOAPI = "https://woolibresign.s1-tastewp.com/wp-json/wc/v3";
+var auth =
+  "Y2tfNDQ2ZjQxYzZiOTc0MGEzYWExZWU5NmZkNzAwNmE2MDcxZDhjZDg5Mjpjc183OWMzYjkyM2ZmNGM0ZjE1MjgyYWNmODhiNDdjMWQ1NTczNTg4MDNk";
 
 var payment_method = "paypal";
 var payment_method_title = "PayPal";
@@ -28,7 +28,7 @@ var method_id = "free_shipping";
 var method_title = "Free shipping";
 var total = "0.00"; // Mandatory for API to avoid shipping conflict
 
-const options_post= {
+const options_post = {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -67,54 +67,48 @@ const options_post= {
   }),
 };
 const options_get = {
-     method: 'GET',
-     headers: {
-       'Content-Type': 'application/json',
-       'User-Agent': 'insomnia/9.3.3',
-       Authorization: `Basic ${auth}`,
-     },
-
-   }
-
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    "User-Agent": "insomnia/9.3.3",
+    Authorization: `Basic ${auth}`,
+  },
+};
 
 post_order();
 
-async function post_order(){
-     const order = await fetch(`${WOOAPI}/orders`, options_post)
-     if (!order.ok) {
-          const message = `An error has occured: ${order.status}`;
-          throw new Error(message);
-     } else{
-          let res = await order.json()
-          let order_id_post = res['id'];
-          console.log(`Order #${order_id_post} has been placed"`);
-          get_order_by_ID(order_id_post);
-     }
-     
-     
+async function post_order() {
+  const order = await fetch(`${WOOAPI}/orders`, options_post);
+  if (!order.ok) {
+    const message = `An error has occured: ${order.status}`;
+    throw new Error(message);
+  } else {
+    let res = await order.json();
+    let order_id_post = res["id"];
+    console.log(`Order #${order_id_post} has been placed"`);
+    get_order_by_ID(order_id_post);
+  }
 }
 
-async function get_order_by_ID(order_id){
-     const order = await fetch(`${WOOAPI}/orders/${order_id}`, options_get)
-     if (!order.ok) {
-          const message = `An error has occured: ${order.status}`;
-          throw new Error(message);
-     } else{
-          let res = await order.json()
-          console.log(res);
-          let order_id_get = res['id'];
-          let first_name = res['billing']['first_name'];
-          let last_name = res['billing']['last_name'];
-          let currency = res['currency'];
-          console.log(`
+async function get_order_by_ID(order_id) {
+  const order = await fetch(`${WOOAPI}/orders/${order_id}`, options_get);
+  if (!order.ok) {
+    const message = `An error has occured: ${order.status}`;
+    throw new Error(message);
+  } else {
+    let res = await order.json();
+    console.log(res);
+    let order_id_get = res["id"];
+    let first_name = res["billing"]["first_name"];
+    let last_name = res["billing"]["last_name"];
+    let currency = res["currency"];
+    console.log(`
           Order #${order_id_get} has been retrieved successfully.
                `);
-               console.log(`
+    console.log(`
                First Name: ${first_name} 
                Last Name: ${last_name}
-               Price: ${currency} ${res['total']}
+               Price: ${currency} ${res["total"]}
                `);
-     }
+  }
 }
-
-   
