@@ -96,7 +96,7 @@ async function post_order() {
 }
 
 async function get_order_by_ID(order_id) {
-  const order = await fetch(`${WOOAPI}/ordrs/${order_id}`, options_get);
+  const order = await fetch(`${WOOAPI}/orders/${order_id}`, options_get);
   if (!order.ok) {
     const message = `An error has occured: ${order.status}`;
     document.querySelector(".orderGet").classList.add("error");
