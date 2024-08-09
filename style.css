@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+}
+
+.main {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(255, 255, 255);
+}
+.main .orderPost {
+  padding: 20px;
+  background-color: rgb(231, 231, 231);
+}
+.main .orderPost.error {
+  background-color: rgb(255, 204, 204);
+}
+.main .orderPost.success {
+  background-color: rgb(204, 255, 204);
+}
+.main .orderGet {
+  padding: 20px;
+  background-color: rgb(231, 231, 231);
+}
+.main .orderGet.error {
+  background-color: rgb(255, 204, 204);
+}
+.main .orderGet.success {
+  background-color: rgb(204, 255, 204);
+}
+.main .gateway {
+  padding: 20px;
+  background-color: rgb(231, 231, 231);
+}
+.main .gateway.error {
+  background-color: rgb(255, 204, 204);
+}
+.main .gateway.success {
+  background-color: rgb(204, 255, 204);
+}/*# sourceMappingURL=style.css.map */
