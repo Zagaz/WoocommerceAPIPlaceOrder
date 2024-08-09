@@ -188,7 +188,7 @@ function payWithPayPal(wooOrderID, currency_code, value) {
         return actions.order.create({
           purchase_units: [
             {
-              reference_id: `WooOrder_${wooOrderID}`,
+              reference_id: `${wooOrderID}`,
               amount: {
                 currency_code: currency_code,
                 value: value,
