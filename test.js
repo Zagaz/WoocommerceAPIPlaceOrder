@@ -1,4 +1,5 @@
-var url = "https://woolibresign.s1-tastewp.com/wp-json/wc/v3/orders";
+const  WOOAPI = "https://woolibresign.s1-tastewp.com/wp-json/wc/v3";
+var auth = "Y2tfNDQ2ZjQxYzZiOTc0MGEzYWExZWU5NmZkNzAwNmE2MDcxZDhjZDg5Mjpjc183OWMzYjkyM2ZmNGM0ZjE1MjgyYWNmODhiNDdjMWQ1NTczNTg4MDNk"
 
 
 var payment_method = "paypal";
@@ -70,7 +71,7 @@ const options_get = {
      headers: {
        'Content-Type': 'application/json',
        'User-Agent': 'insomnia/9.3.3',
-       Authorization: 'Basic Y2tfNDQ2ZjQxYzZiOTc0MGEzYWExZWU5NmZkNzAwNmE2MDcxZDhjZDg5Mjpjc183OWMzYjkyM2ZmNGM0ZjE1MjgyYWNmODhiNDdjMWQ1NTczNTg4MDNk'
+       Authorization: `Basic ${auth}`,
      },
 
    }
@@ -79,7 +80,7 @@ const options_get = {
 post_order();
 
 async function post_order(){
-     const order = await fetch("https://woolibresign.s1-tastewp.com/wp-json/wc/v3/orders", options_post)
+     const order = await fetch(`${WOOAPI}/orders`, options_post)
      if (!order.ok) {
           const message = `An error has occured: ${order.status}`;
           throw new Error(message);
@@ -94,7 +95,7 @@ async function post_order(){
 }
 
 async function get_order_by_ID(order_id){
-     const order = await fetch(`https://woolibresign.s1-tastewp.com/wp-json/wc/v3/orders/${order_id}`, options_get)
+     const order = await fetch(`${WOOAPI}/orders/${order_id}`, options_get)
      if (!order.ok) {
           const message = `An error has occured: ${order.status}`;
           throw new Error(message);
