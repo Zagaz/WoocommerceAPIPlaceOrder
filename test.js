@@ -62,7 +62,6 @@ const options_get = {
   method: "GET",
   headers: {
     "Content-Type": "application/json",
-    "User-Agent": "insomnia/9.3.3",
     Authorization: `Basic ${auth}`,
   },
 };
