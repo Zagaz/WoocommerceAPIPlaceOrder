@@ -204,8 +204,6 @@ function payWithPayPal(wooOrderID, currency_code, value) {
           alert("Transaction completed by " + details.payer.name.given_name);
           console.log("PayPal Order Details:", details);
           //  atualizar status woocommerce
-
-
         });
       },
     })
@@ -213,3 +211,8 @@ function payWithPayPal(wooOrderID, currency_code, value) {
 
   console.log("PayPal finished");
 }
+
+function updateWoocommerceOrderStatus(order_id, status) {
+  alert(`Update Order Status on WooCommerce<br>Order ID: ${order_id}<br>Status: ${status}`);
+}
+
