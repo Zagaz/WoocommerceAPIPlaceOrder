@@ -1,221 +1,163 @@
-// All variables
-const WOOAPI = "https://woolibresign.s1-tastewp.com/wp-json/wc/v3"; // <== Hardcode
-var auth =
-  "Y2tfNDQ2ZjQxYzZiOTc0MGEzYWExZWU5NmZkNzAwNmE2MDcxZDhjZDg5Mjpjc183OWMzYjkyM2ZmNGM0ZjE1MjgyYWNmODhiNDdjMWQ1NTczNTg4MDNk"; // <== Hardcode
-var payment_method = "paypal"; // <== Hardcode
-var payment_method_title = "PayPal"; // <== Hardcode
-var set_paid = false; // <== Hardcode
+// Configurações iniciais
+const WOOAPI = "https://groovyrecord.s2-tastewp.com/wp-json/wc/v3";
+const auth = "Y2tfOGZmMDVjNzczNmM1MTdjZWI1YWI0OWYyNDc3ZjU2NzUwMGVjMDZjMjpjc180MzU3MDA4M2Q4NWUwZjUzOTQzMWIxNmQ3YjdmNTM3YjFjYzc1Zjlk";
+const clientID = "AaF1bCbWfjh-vDEHWrk9NHYv2ABvQ_67_OKT4yMmmvpAEzvzK-v7sSYXwMcALBGeT8FyRY5stgvyaDKZ";
+const secret = "EBgDD3g8H1Bqm8051VwvzrYml0EA5fYB0uXjYsRWhnEz-jC3FVMfLUQT-kmOe9kD9DXPKIQIe6glh_j5";
+const payment_method = "paypal";
+const payment_method_title = "PayPal";
+const set_paid = false;
 
-// DADOS do WOOCOMMERCE INICIO
-var first_name = "Bruce"; // <===
-var last_name = "Wayne"; // <===
-var address_1 = "Wayne Manor - 1007 Mountain Drive"; // <===
-var city = "Gotham"; // <===
-var state = "GT"; // <===
-var postcode = "10001"; // <===
-var country = "US"; // <===
-var email = "bruce.wayne@waynetech.com"; // <===
-var phone = "(555) 123-4567"; // <===
+// Dados do cliente
+const customerData = {
+  first_name: "Bruce",
+  last_name: "Wayne",
+  address_1: "Wayne Manor - 1007 Mountain Drive",
+  city: "Gotham",
+  state: "GT",
+  postcode: "10001",
+  country: "US",
+  email: "bruce.wayne@waynetech.com",
+  phone: "(555) 123-4567"
+};
 
+// Produto e envio
+const productData = {
+  product_id: 24,
+  quantity: 1,
+  method_id: "free_shipping",
+  method_title: "Free shipping",
+  total: "0.00"
+};
 
-// DADOS do WOOCOMMERCE FINAL
+// Configurações de cabeçalho
+const headers = {
+  "Content-Type": "application/json",
+  Authorization: `Basic ${auth}`,
+};
 
-// Free shipping
-var product_id = 12; // < Hardcode
-var quantity = 1; // < Hardcode
-var method_id = "free_shipping"; // <Hardcode
-var method_title = "Free shipping"; // <Hardcode
-var total = "0.00"; // Hardcode and Mandatory for API to avoid shipping conflict
+// Função para criar pedido no WooCommerce
+async function createOrderWooCommerce() {
+  const response = await fetch(`${WOOAPI}/orders`, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify({
+      payment_method: payment_method,
+      payment_method_title: payment_method_title,
+      set_paid: set_paid,
+      status: "pending",
+      billing: customerData,
+      line_items: [{
+        product_id: productData.product_id,
+        quantity: productData.quantity,
+      }],
+      shipping_lines: [{
+        method_id: productData.method_id,
+        method_title: productData.method_title,
+        total: productData.total,
+      }]
+    }),
+  });
 
-const options_post = {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
+  if (!response.ok) {
+    throw new Error(`Failed to create WooCommerce order: ${response.status}`);
+  }
 
-    Authorization:
-      "Basic Y2tfNDQ2ZjQxYzZiOTc0MGEzYWExZWU5NmZkNzAwNmE2MDcxZDhjZDg5Mjpjc183OWMzYjkyM2ZmNGM0ZjE1MjgyYWNmODhiNDdjMWQ1NTczNTg4MDNk",
-  },
-  body: JSON.stringify({
-    payment_method: payment_method,
-    payment_method_title: payment_method_title,
-    set_paid: set_paid,
-    status: "pending", // <= Keep pending
-    billing: {
-      first_name: first_name,
-      last_name: last_name,
-      address_1: address_1,
-      city: city,
-      state: state,
-      postcode: postcode,
-      country: country,
-      email: email,
-      phone: phone,
+  return await response.json();
+}
+
+// Função para criar ordem de pagamento no PayPal
+async function createPayPalOrder(orderID, currency_code, value) {
+  const paypalAuth = btoa(`${clientID}:${secret}`);
+  const response = await fetch("https://api-m.sandbox.paypal.com/v2/checkout/orders", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${paypalAuth}`,
     },
-    line_items: [
-      {
-        product_id: product_id,
-        quantity: quantity,
-      },
-    ],
-    shipping_lines: [
-      {
-        method_id: method_id,
-        method_title: method_title,
-        total: total, // Mandatory to avoid API shipping conflict
-      },
-    ],
-  }),
-};
-const options_get = {
-  method: "GET",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Basic ${auth}`,
-  },
-};
+    body: JSON.stringify({
+      intent: "CAPTURE",
+      purchase_units: [{
+        reference_id: `WooOrder_${orderID}`,
+        amount: {
+          currency_code: currency_code,
+          value: value,
+        },
+      }],
+    }),
+  });
 
-post_order();
-
-async function post_order() {
-  // A URL da API e Opções
-  const order = await fetch(`${WOOAPI}/orders`, options_post);
-  // Ver se tá tudo OK.
-  if (!order.ok) {
-    const message = `An error has occured: ${order.status}`;
-    document.querySelector(".orderPost").classList.add("error");
-    document.querySelector(".orderGet").classList.add("error");
-    document.querySelector(".orderGet").innerHTML = message;
-    document.querySelector(".orderPost").innerHTML = message;
-    throw new Error(message);
-  } else {
-    // Se sim
-    let res = await order.json();
-    console.log("Woo Object", res); // Todo: Remover
-    let order_id_post = res["id"];
-    let order_currency = res["currency"];
-    let order_total = res["total"];
-
-    document.querySelector(".orderPost").classList.add("success");
-    document.querySelector(
-      ".orderPost"
-    ).innerHTML = `Order #${order_id_post} successfully registered.`;
-
-    // resquestPayPal();
-    get_order_by_ID(order_id_post);
-    payWithPayPal(order_id_post, order_currency, order_total);
-
+  if (!response.ok) {
+    throw new Error(`Failed to create PayPal order: ${response.status}`);
   }
-}
-// Só para checar se o pedido foi registrado
-async function get_order_by_ID(order_id) {
-  const order = await fetch(`${WOOAPI}/orders/${order_id}`, options_get);
-  if (!order.ok) {
-    const message = `An error has occured: ${order.status}`;
-    document.querySelector(".orderGet").classList.add("error");
-    document.querySelector(".orderGet").innerHTML = message;
-    throw new Error(message);
-  } else {
-    let res = await order.json();
-    let order_id_get = res["id"];
-    let first_name = res["billing"]["first_name"];
-    let last_name = res["billing"]["last_name"];
-    let currency = res["currency"];
-    document.querySelector(".orderGet").classList.add("success");
-    document.querySelector(
-      ".orderGet"
-    ).innerHTML = `Order #${order_id_get} has been retrieved successfully.<br>
-    First Name: ${first_name}<br>
-    Last Name: ${last_name}<br>
-    Price: ${currency} ${res["total"]}`;
-  }
+
+  return await response.json();
 }
 
-// PayPal
+// Função para atualizar o status do pedido no WooCommerce
+async function updateWooCommerceOrderStatus(orderID, status) {
+  const response = await fetch(`${WOOAPI}/orders/${orderID}`, {
+    method: "PUT",
+    headers: headers,
+    body: JSON.stringify({
+      status: status,
+      set_paid: true,
+    }),
+  });
 
-async function payWithPayPal(wooOrderID, currency_code, value) {
-  alert("PayPal started");
-  const clientID =
-    "AaF1bCbWfjh-vDEHWrk9NHYv2ABvQ_67_OKT4yMmmvpAEzvzK-v7sSYXwMcALBGeT8FyRY5stgvyaDKZ";
-  const secret =
-    "EBgDD3g8H1Bqm8051VwvzrYml0EA5fYB0uXjYsRWhnEz-jC3FVMfLUQT-kmOe9kD9DXPKIQIe6glh_j5";
+  if (!response.ok) {
+    throw new Error(`Failed to update WooCommerce order: ${response.status}`);
+  }
 
-  // Base64 encode the client ID and secret
-  const auth = btoa(`${clientID}:${secret}`);
+  return await response.json();
+}
 
-  // Step 1: Create a PayPal order
-  const createOrderResponse = await fetch(
-    "https://api-m.sandbox.paypal.com/v2/checkout/orders",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${auth}`,
-      },
-      body: JSON.stringify({
-        intent: "CAPTURE",
-        purchase_units: [
-          {
+// Função principal
+async function processOrder() {
+  try {
+    // Criar pedido no WooCommerce
+    const wooOrder = await createOrderWooCommerce();
+    const wooOrderID = wooOrder.id;
+    const currency = 'USD'; // Confirmado como a moeda padrão
+    const total = wooOrder.total;
+
+    console.log(`WooCommerce Order #${wooOrderID} created successfully.`);
+
+    // Criar pedido no PayPal
+    const paypalOrder = await createPayPalOrder(wooOrderID, currency, total);
+    const paypalOrderID = paypalOrder.id;
+
+    console.log(`PayPal Order #${paypalOrderID} created successfully.`);
+
+    // Integrar o botão do PayPal
+    paypal.Buttons({
+      createOrder: (data, actions) => {
+        return actions.order.create({
+          purchase_units: [{
             reference_id: `WooOrder_${wooOrderID}`,
             amount: {
-              currency_code: currency_code,
-              value: value, // Set this to the total amount from the WooCommerce order
+              currency_code: currency,
+              value: total,
             },
-          },
-        ],
-      }),
-    }
-  );
+          }],
+        });
+      },
+      onApprove: async (data, actions) => {
+        const details = await actions.order.capture();
+        console.log('Payment successful:', details);
 
-  
+        // Atualizar status do pedido no WooCommerce
+        await updateWooCommerceOrderStatus(wooOrderID, 'completed');
+        console.log(`WooCommerce Order #${wooOrderID} status updated to completed.`);
+      },
+      onError: (err) => {
+        console.error('PayPal payment failed:', err);
+      }
+    }).render('#paypal-button-container');
 
-  const createOrderData = await createOrderResponse.json();
-  const paypalOrderID = createOrderData.id; // Save PayPal order ID for later
-
-  
-  if (paypalOrderID) {
-    payPayBT(wooOrderID, currency_code, value);
+  } catch (error) {
+    console.error('Error processing order:', error);
   }
-
-  alert("PayPal finished");
 }
 
-// PayPal
-
-function payPayBT(wooOrderID, currency_code, value) {
-  alert("PayPal BT started");
-
-  // Renderiza o botão do PayPal
-  paypal
-    .Buttons({
-      createOrder: function (data, actions) {
-        return actions.order.create({
-          purchase_units: [
-            {
-              reference_id: `${wooOrderID}`,
-              amount: {
-                currency_code: currency_code,
-                value: value,
-              },
-            },
-          ],
-        });
-      },
-      onApprove: function (data, actions) {
-        return actions.order.capture().then(function (details) {
-          alert("Transaction completed by " + details.payer.name.given_name);
-          console.log("PayPal Order Details:", details);
-          //  atualizar status woocommerce
-        });
-      },
-    })
-    .render("#paypal-button-container");
-
-  alert("PayPal BT finished");
-}
-
-function updateWoocommerceOrderStatus(order_id, status) {
-  alert(`Update Order Status on WooCommerce<br>Order ID: ${order_id}<br>Status: ${status}`);
-  // var set_paid = true; // 
-  // status: "completed", // 
-}
-
+// Iniciar o processo
+processOrder();
