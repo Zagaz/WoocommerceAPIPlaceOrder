@@ -1,5 +1,10 @@
+// ck_b7b73852ad37c7033cccb9ba5d44163f4de175e3
+// cs_36bc3a57b4f28564a203ea8bfbae8b4dc966507d
+// URL = https://libresign.s2-tastewp.com/
+
 // Configurações iniciais
-const WOOAPI = "https://groovyrecord.s2-tastewp.com/wp-json/wc/v3";
+const URL = "https://libresign.s2-tastewp.com/";
+const WOOAPI = `${URL}wp-json/wc/v3`;
 const auth = "Y2tfOGZmMDVjNzczNmM1MTdjZWI1YWI0OWYyNDc3ZjU2NzUwMGVjMDZjMjpjc180MzU3MDA4M2Q4NWUwZjUzOTQzMWIxNmQ3YjdmNTM3YjFjYzc1Zjlk";
 const clientID = "AaF1bCbWfjh-vDEHWrk9NHYv2ABvQ_67_OKT4yMmmvpAEzvzK-v7sSYXwMcALBGeT8FyRY5stgvyaDKZ";
 const secret = "EBgDD3g8H1Bqm8051VwvzrYml0EA5fYB0uXjYsRWhnEz-jC3FVMfLUQT-kmOe9kD9DXPKIQIe6glh_j5";
